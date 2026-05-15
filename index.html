@@ -19,6 +19,7 @@
   --gold:#ffd166;
 }
 html,body{height:100%;overflow:hidden;}
+.letter-scene-open-body{overflow:hidden!important;}
 body{
   background:var(--ocean);
   display:flex;align-items:center;justify-content:center;
@@ -124,12 +125,13 @@ body{
 /* ── LETTER (hidden by default) ── */
 .letter-scene{
   position:fixed;inset:0;
-  display:flex;align-items:center;justify-content:center;
+  display:flex;align-items:flex-start;justify-content:center;
   z-index:20;
   opacity:0;pointer-events:none;
   transition:opacity .6s ease;
   overflow-y:auto;
-  padding:20px;
+  -webkit-overflow-scrolling:touch;
+  padding:60px 20px 40px;
 }
 .letter-scene.open{opacity:1;pointer-events:all;}
 
@@ -440,7 +442,7 @@ body{
 
     <div class="letter-btns">
       <button class="btn-yes" onclick="sayYes()">🌊 yes!! let's dive 🌊</button>
-      <button class="btn-no" id="btn-no" onmouseover="runAway(this)" ontouchstart="runAway(this)" onclick="sayYes()">no</button>
+      <button class="btn-no" id="btn-no" onmouseover="runAway(this, event)" ontouchstart="runAway(this, event)" onclick="sayYes()">no</button>
     </div>
   </div>
 </div>
@@ -484,16 +486,21 @@ function openLetter() {
   document.getElementById('envelope-scene').style.display = 'none';
   document.getElementById('letter-scene').classList.add('open');
   document.getElementById('close-btn').classList.add('show');
+  document.body.style.overflow = 'hidden';
+  document.documentElement.style.overflow = 'hidden';
 }
 function closeLetter() {
   document.getElementById('envelope-scene').style.display = 'flex';
   document.getElementById('letter-scene').classList.remove('open');
   document.getElementById('close-btn').classList.remove('show');
+  document.body.style.overflow = 'hidden';
+  document.documentElement.style.overflow = 'hidden';
 }
 
 // ── NO BUTTON RUNS AWAY ──
-function runAway(btn) {
-  const max = 200;
+function runAway(btn, e) {
+  if (e && e.cancelable) e.preventDefault();
+  const max = window.innerWidth < 500 ? 120 : 200;
   const nx = (Math.random()-.5)*max;
   const ny = (Math.random()-.5)*max;
   btn.style.setProperty('--nx', nx+'px');
